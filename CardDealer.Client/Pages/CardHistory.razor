@@ -1,0 +1,47 @@
+﻿@page "/cardhistory";
+@inject ICardService _cardService;
+
+
+@if(cardHand == null)
+{
+    <h2>Loading...</h2>
+}
+else
+{
+    <table class="table">
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">Id</th>
+            <th scope="col">First card</th>
+            <th scope="col">Second card</th>
+            <th scope="col">Third card</th>
+            <th scope="col">Fourth card</th>
+            <th scope="col">Fifth card</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var cardHand in cardHand)
+        {
+            <tr>
+                <th scope="row">@cardHand.HandId</th>
+                @foreach (var card in cardHand.CardHand)
+                {
+                    <td>@card.Value of @card.Suit</td>
+                    
+                }
+            </tr>
+        }
+    </tbody>
+</table>
+}
+
+
+
+@code {
+    private List<CardHandDto> cardHand { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        cardHand = await _cardService.GetCardHands();
+    }
+}

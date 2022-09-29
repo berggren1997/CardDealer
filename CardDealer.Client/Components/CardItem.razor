@@ -1,0 +1,57 @@
+﻿
+<style>
+    .card {
+        height: 350px;
+        width: 300px;
+    }
+
+
+    .bottom-section {
+        display: flex;
+        position: absolute;
+        bottom: 0;
+        right: 7px;
+    }
+
+    .middle-section {
+        text-align: center;
+        margin-top: 55px;
+    }
+</style>
+
+<div class="col">
+    <div class="card">
+        <div class="card-body">
+            <div class="top-section">
+                <h1>@CardDto.Value</h1>
+            </div>
+            <div class="middle-section">
+                <h4>@CardDto.Suit</h4>
+            </div>
+            <div class="middle-section">
+                <h4>@CardDto.Suit</h4>
+            </div>
+            <div class="bottom-section">
+                <h1>@CardDto.Value</h1>
+            </div>
+        </div>
+    </div>
+    <input type="checkbox" @onclick="() => SwitchCard(CardDto.Id)"/>
+    <label>switch</label>
+</div>
+
+
+@code {
+    [Parameter]
+    public CardDto CardDto { get; set; }
+
+    [Parameter]
+    public EventCallback OnSwitch { get; set; }
+
+
+    public async Task SwitchCard(Guid id)
+    {
+        await OnSwitch.InvokeAsync();
+        StateHasChanged();
+    }
+}
