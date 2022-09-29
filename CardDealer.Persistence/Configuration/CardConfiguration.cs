@@ -4,6 +4,10 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CardDealer.Persistence.Configuration
 {
+    /// <summary>
+    /// this class is used to seed the database, and fill the Cards table with 
+    /// some sample data
+    /// </summary>
     public class CardConfiguration : IEntityTypeConfiguration<Card>
     {
         private List<string> cardSuits = new() { "Hearts", "Diamonds", "Clubs", "Spades" };

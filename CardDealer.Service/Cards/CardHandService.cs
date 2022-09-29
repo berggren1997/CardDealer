@@ -59,7 +59,7 @@ namespace CardDealer.Service.Cards
             return cardHandsToReturn;
         }
 
-        private List<CardHandDto> MapToDto(IEnumerable<Hand> cardHandEntities)
+        public List<CardHandDto> MapToDto(IEnumerable<Hand> cardHandEntities)
         {
             return cardHandEntities.Select(h =>
             new CardHandDto

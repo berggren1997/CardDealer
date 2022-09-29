@@ -57,5 +57,15 @@ namespace CardDealer.Tests.ServiceTests
             
             await Assert.ThrowsAsync<CardHandsNotFoundException>(() => _sut.GetCardHands(true));
         }
+
+        [Fact]
+        public void MapToDto_ShouldReturnListOfSameLength()
+        {
+            int expectedLength = 3;
+
+            var cardDtoList = _sut.MapToDto(_cardHands);
+
+            Assert.Equal(expectedLength, cardDtoList.Count);
+        }
     }
 }

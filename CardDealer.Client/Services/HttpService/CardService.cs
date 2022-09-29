@@ -14,6 +14,10 @@ namespace CardDealer.Client.Services.HttpService
             _httpClient = httpClient;
         }
 
+        /// <summary>
+        /// GET request
+        /// </summary>
+        /// <returns></returns>
         public async Task<List<CardHandDto>> GetCardHands()
         {
             var response = await _httpClient
@@ -21,6 +25,10 @@ namespace CardDealer.Client.Services.HttpService
             return response;
         }
 
+        /// <summary>
+        /// sends a GET to the api 
+        /// </summary>
+        /// <returns>deck of cards or null</returns>
         public async Task<Stack<CardDto>> GetDeckOfCards()
         {
             var response = await _httpClient.GetAsync("/api/card");
@@ -41,6 +49,11 @@ namespace CardDealer.Client.Services.HttpService
             return result;
         }
 
+        /// <summary>
+        /// sends a POST request to the api
+        /// </summary>
+        /// <param name="cardHandDto"></param>
+        /// <returns></returns>
         public async Task<bool> SaveCardHand(CardHandDto cardHandDto)
         {
             var response = await _httpClient.PostAsJsonAsync("/api/cardhand", cardHandDto);
@@ -48,8 +61,11 @@ namespace CardDealer.Client.Services.HttpService
             return response.IsSuccessStatusCode;
         }
 
-        //TODO: Testa denna metod, få en lista, och kolla så att listan inte är likadan
-        //TODO: Kolla också så att längden på listan är samma som listan man skicka in
+        /// <summary>
+        /// shuffles a deck of cards using Fisher–Yates algorithm
+        /// </summary>
+        /// <param name="cardsToShuffle"></param>
+        /// <returns></returns>
         public List<CardDto> ShuffleCardDeck(List<CardDto> cardsToShuffle)
         {
             Random random = new();
