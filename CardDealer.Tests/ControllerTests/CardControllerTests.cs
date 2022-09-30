@@ -1,6 +1,7 @@
 ﻿using CardDealer.Api.Controllers;
 using CardDealer.Service.Contracts;
 using CardDealer.Shared.Dto;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
 
 namespace CardDealer.Tests.ControllerTests
@@ -36,6 +37,38 @@ namespace CardDealer.Tests.ControllerTests
                     Value = "Queen"
                 }
             };
+        }
+
+        [Fact]
+        public async Task GetDeckOfCards_ShouldReturnOkResponseWhenDataFound()
+        {
+            // Arrange
+            _serviceMock.Setup(x => x.CardService.GetDeckOfCards(false))
+                .ReturnsAsync(_cards);
+
+            // Act
+            var result = await _sut.GetDeckOfCards();
+
+            // Assert
+            Assert.NotNull(result);
+            _serviceMock.Verify(x => x.CardService.GetDeckOfCards(false), Times.Once);
+            Assert.IsType<OkObjectResult>(result as OkObjectResult);
+        }
+
+        [Fact]
+        public async Task GetDeckOfCards_ShouldReturnNotFoundWhenNoDataFound()
+        {
+            // Arrange
+            _serviceMock.Setup(x => x.CardService.GetDeckOfCards(false))
+                .ReturnsAsync((List<CardDto>)null);
+
+            // Act
+            var result = await _sut.GetDeckOfCards();
+
+            // Assert
+            Assert.NotNull(result);
+            _serviceMock.Verify(x => x.CardService.GetDeckOfCards(false), Times.Once);
+            Assert.IsType<NotFoundObjectResult>(result as NotFoundObjectResult);
         }
     }
 }

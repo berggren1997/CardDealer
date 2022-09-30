@@ -19,7 +19,8 @@ namespace CardDealer.Api.Controllers
         {
             var cards = await _service.CardService.GetDeckOfCards(trackChanges: false);
 
-            return Ok(cards);
+            return cards != null ? Ok(cards) : NotFound("No cards found");
+            //return Ok(cards);
         }
     }
 }

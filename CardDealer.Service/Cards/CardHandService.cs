@@ -4,6 +4,8 @@ using CardDealer.Entities.Models;
 using CardDealer.Service.Contracts.Cards;
 using CardDealer.Shared.Dto;
 using CardDealer.Shared.Dto.CardHand;
+using System.Net.Http.Headers;
+using System.Reflection.Metadata;
 
 namespace CardDealer.Service.Cards
 {
@@ -21,7 +23,7 @@ namespace CardDealer.Service.Cards
         /// </summary>
         /// <param name="cardHand"></param>
         /// <returns></returns>
-        public async Task<bool> CreateCardHand(CardHandDto cardHand)
+        public async Task<CardHandDto> CreateCardHand(CardHandDto cardHand)
         {
             Guid randomCardHandId = Guid.NewGuid();
 
@@ -37,7 +39,50 @@ namespace CardDealer.Service.Cards
             };
 
             _repositoryManger.CardHandRepository.CreateCardHand(cardHandEntity);
-            return await _repositoryManger.SaveAsync() > 0;
+            var result = await _repositoryManger.SaveAsync();
+
+            if (result > 0)
+            {
+                return new CardHandDto
+                {
+                    HandId = cardHandEntity.Id,
+                    CreatedAt = cardHandEntity.CreatedAt,
+                    CardHand = cardHandEntity.CardHands.Select(x => new CardDto
+                    {
+                        Id = x.CardId,
+                        Suit = x.Card.Suit,
+                        Value = x.Card.Value
+                    }).ToList()
+
+                };
+            }
+            else
+            {
+                throw new CardHandBadRequestException();
+            }
+
+        }
+
+        public async Task<CardHandDto> GetCardHand(Guid id, bool trackChanges)
+        {
+            var cardHandEntity = await _repositoryManger.CardHandRepository.GetCardHand(id, trackChanges);
+
+            if (cardHandEntity == null)
+                throw new CardNotFoundException();
+
+            var cardToReturn = new CardHandDto
+            {
+                HandId = cardHandEntity.Id,
+                CreatedAt = cardHandEntity.CreatedAt,
+                CardHand = cardHandEntity.CardHands.Select(x => new CardDto
+                {
+                    Id = x.CardId,
+                    Suit = x.Card.Suit,
+                    Value = x.Card.Value
+                }).ToList()
+            };
+
+            return cardToReturn;
         }
 
         /// <summary>
@@ -51,7 +96,7 @@ namespace CardDealer.Service.Cards
             IEnumerable<Hand> cardHandEntities = await _repositoryManger.CardHandRepository
                 .GetCardHands(trackChanges);
 
-            if (cardHandEntities == null) 
+            if (cardHandEntities == null)
                 throw new CardHandsNotFoundException();
 
             List<CardHandDto> cardHandsToReturn = MapToDto(cardHandEntities);

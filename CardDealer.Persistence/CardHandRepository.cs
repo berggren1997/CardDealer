@@ -18,5 +18,12 @@ namespace CardDealer.Persistence
 
         public void CreateCardHand(Hand cardHand) =>
             CreateSingle(cardHand);
+
+        public async Task<Hand> GetCardHand(Guid id, bool trackChanges) =>
+            await FindByCondition(x => x.Id == id, trackChanges)
+            .Include(card => card.CardHands)
+            .ThenInclude(ch => ch.Card)
+            .OrderBy(d => d.CreatedAt)
+            .FirstOrDefaultAsync();
     }
 }

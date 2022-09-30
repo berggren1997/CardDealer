@@ -21,19 +21,33 @@ namespace CardDealer.Api.Controllers
             // trackchanges true due to lazy loading error otherwise
             var cardHands = await _service.CardHandService
                 .GetCardHands(trackChanges: true);
+            
+            if(cardHands == null || !cardHands.Any())
+                return NotFound("No data found in database");
 
             return Ok(cardHands);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> CreateCardHand([FromBody] CardHandDto cardHand)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetCardHand(Guid id)
         {
-            bool cardHandSuccess = await _service.CardHandService.CreateCardHand(cardHand);
+            var cardHand = await _service.CardHandService.GetCardHand(id, trackChanges: true);
+            
+            if (cardHand == null)
+                return NotFound("No card was found");
 
-            if (!cardHandSuccess) return BadRequest("Something went wrong with your request");
+            return Ok(cardHand);
+        }
 
-            //TODO: Return createdatroute instead, so create a getbyid cardhand method
-            return StatusCode(201);
+        [HttpPost]
+        public async Task<IActionResult> CreateCardHand([FromBody] CardHandDto newCardHand)
+        {
+            var cardHand = await _service.CardHandService.CreateCardHand(newCardHand);
+
+            if (cardHand == null) 
+                return BadRequest("Something went wrong when sending your request");
+
+            return CreatedAtRoute("GetCardHand", new { id = cardHand.HandId }, cardHand);
         }
     }
 }

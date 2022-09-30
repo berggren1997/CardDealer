@@ -1,5 +1,6 @@
 ﻿using CardDealer.Contracts.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace CardDealer.Persistence
 {
@@ -14,6 +15,10 @@ namespace CardDealer.Persistence
 
         public IQueryable<T> FindAll(bool trackChanges) =>
             !trackChanges ? _context.Set<T>().AsNoTracking() : _context.Set<T>();
+
+        public IQueryable<T> FindByCondition(Expression<Func<T, bool>> condition, bool trackChanges) =>
+            !trackChanges ? _context.Set<T>().AsNoTracking().Where(condition) :
+            _context.Set<T>().Where(condition);
 
         public void CreateMany(List<T> entities) => _context.Set<T>().AddRange(entities);
 
