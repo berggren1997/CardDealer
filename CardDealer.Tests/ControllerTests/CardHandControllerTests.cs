@@ -16,7 +16,19 @@ namespace CardDealer.Tests.ControllerTests
         public CardHandControllerTests()
         {
             _sut = new CardHandController(_serviceMock.Object);
-            _cardHands = new List<CardHandDto>();
+            _cardHands = new List<CardHandDto> 
+            { 
+                new CardHandDto
+                {
+                    HandId = Guid.NewGuid(),
+                    CardHand = new List<CardDto>()
+                },
+                new CardHandDto
+                {
+                    HandId = Guid.NewGuid(),
+                    CardHand = new List<CardDto>()
+                }
+            };
         }
 
         [Fact]
@@ -45,21 +57,38 @@ namespace CardDealer.Tests.ControllerTests
             Assert.IsType<NotFoundObjectResult>(response as NotFoundObjectResult);
         }
 
-        //[Fact]
-        //public async Task CreateCardHand_ShouldReturn201Created()
-        //{
-        //    var cardHand = new CardHandDto()
-        //    {
-        //        HandId = Guid.NewGuid(),
-        //        CardHand = new List<CardDto>()
-        //    };
+        [Fact]
+        public async Task CreateCardHand_ShouldReturn201Created()
+        {
+            var cardHand = new CardHandDto()
+            {
+                HandId = Guid.NewGuid(),
+                CardHand = new List<CardDto>()
+            };
 
-        //    _serviceMock.Setup(x => x.CardHandService.CreateCardHand(cardHand))
-        //        .ReturnsAsync(true);
+            _serviceMock.Setup(x => x.CardHandService.CreateCardHand(cardHand))
+                .ReturnsAsync(cardHand);
+            
+            var result = await _sut.CreateCardHand(cardHand);
 
-        //    int statusCodeCreated = 201;
+            Assert.IsType<CreatedAtRouteResult>(result);
+        }
 
-        //    //_serviceMock.Verify(x => x.CardHandService.CreateCardHand(cardHand), Times.Once);
-        //}
+        [Fact]
+        public async Task CreateCardHand_ShouldReturnBadRequestWhenInvalidDataPassed()
+        {
+            var cardHand = new CardHandDto()
+            {
+                HandId = Guid.NewGuid(),
+                CardHand = new List<CardDto>()
+            };
+
+            _serviceMock.Setup(x => x.CardHandService.CreateCardHand(cardHand))
+                .ReturnsAsync((CardHandDto) null);
+
+            var result = await _sut.CreateCardHand(cardHand);
+
+            Assert.IsType<BadRequestObjectResult>(result);
+        }
     }
 }

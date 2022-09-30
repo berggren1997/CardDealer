@@ -1,5 +1,4 @@
-﻿@*@page "/card-game"*@
-@inject ICardService _cardService;
+﻿@inject ICardService _cardService;
 
 
 @if (_deckOfCards == null)
@@ -21,14 +20,15 @@ else
         <div class="row">
             @foreach (var card in cardHandDto?.CardHand)
             {
-                <CardItem 
-                    CardDto="card" 
-                    OnSwitch="() => SwitchCard(card.Id)"/>
+                <CardItem CardDto="card"
+              OnSwitch="() => SwitchCard(card.Id)" />
             }
-            <button style="margin-top: 55px; margin-left: 37em; width: 300px; height: 70px;" 
-            class="btn btn-primary" disabled="@errors" @onclick="() => SubmitCards(cardHandDto)">Save hand</button>
+            <button style="margin-top: 55px; margin-left: 37em; width: 300px; height: 70px;"
+            class="btn btn-primary" disabled="@errors" @onclick="() => SubmitCards(cardHandDto)">
+                Save hand
+            </button>
         </div>
-        @if(errors)
+        @if (errors)
         {
             <h2>@errorText</h2>
         }
@@ -40,7 +40,6 @@ else
 @code {
 
     Stack<CardDto>? _deckOfCards { get; set; }
-    List<CardDto>? cardHand = new();
     CardHandDto cardHandDto = new();
 
     const int cardHandMaxValue = 5;
@@ -57,7 +56,7 @@ else
     {
         var isCardsSaved = await _cardService.SaveCardHand(cardHand);
 
-        if(!isCardsSaved)
+        if (!isCardsSaved)
         {
             errors = true;
             errorText = "There was a problem saving the changes to the database";
@@ -66,9 +65,12 @@ else
 
     private void SwitchCard(Guid cardId)
     {
-        cardHandDto.CardHand = cardHandDto.CardHand.Where(x => x.Id != cardId).ToList();
-        cardHandDto.CardHand.Add(_deckOfCards.Pop());
-        StateHasChanged();
+        if (cardHandDto.CardHand.Count > 0)
+        {
+            cardHandDto.CardHand = cardHandDto.CardHand.Where(x => x.Id != cardId).ToList();
+            cardHandDto.CardHand.Add(_deckOfCards.Pop());
+            StateHasChanged();
+        }
     }
 
     private void DrawCards()

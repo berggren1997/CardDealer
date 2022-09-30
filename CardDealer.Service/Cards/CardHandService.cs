@@ -4,8 +4,6 @@ using CardDealer.Entities.Models;
 using CardDealer.Service.Contracts.Cards;
 using CardDealer.Shared.Dto;
 using CardDealer.Shared.Dto.CardHand;
-using System.Net.Http.Headers;
-using System.Reflection.Metadata;
 
 namespace CardDealer.Service.Cards
 {
@@ -39,6 +37,13 @@ namespace CardDealer.Service.Cards
 
         }
 
+        /// <summary>
+        /// requests a specific card hand, and maps to dto
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="trackChanges"></param>
+        /// <returns></returns>
+        /// <exception cref="CardNotFoundException"></exception>
         public async Task<CardHandDto> GetCardHand(Guid id, bool trackChanges)
         {
             var cardHandEntity = await _repositoryManger.CardHandRepository.GetCardHand(id, trackChanges);
