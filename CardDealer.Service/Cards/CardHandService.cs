@@ -25,41 +25,17 @@ namespace CardDealer.Service.Cards
         /// <returns></returns>
         public async Task<CardHandDto> CreateCardHand(CardHandDto cardHand)
         {
-            Guid randomCardHandId = Guid.NewGuid();
-
-            Hand cardHandEntity = new()
-            {
-                Id = randomCardHandId,
-                CreatedAt = DateTime.Now,
-                CardHands = cardHand.CardHand.Select(card => new CardHand
-                {
-                    CardId = card.Id,
-                    HandId = randomCardHandId
-                }).ToList()
-            };
+            Hand cardHandEntity = MapFromHandDtoToEntity(cardHand);
 
             _repositoryManger.CardHandRepository.CreateCardHand(cardHandEntity);
             var result = await _repositoryManger.SaveAsync();
 
-            if (result > 0)
+            return result > 0 ? new CardHandDto
             {
-                return new CardHandDto
-                {
-                    HandId = cardHandEntity.Id,
-                    CreatedAt = cardHandEntity.CreatedAt,
-                    CardHand = cardHandEntity.CardHands.Select(x => new CardDto
-                    {
-                        Id = x.CardId,
-                        Suit = x.Card.Suit,
-                        Value = x.Card.Value
-                    }).ToList()
-
-                };
-            }
-            else
-            {
-                throw new CardHandBadRequestException();
-            }
+                HandId = cardHandEntity.Id,
+                CreatedAt = cardHandEntity.CreatedAt,
+                CardHand = cardHand.CardHand
+            } : throw new CardHandBadRequestException();
 
         }
 
@@ -104,6 +80,36 @@ namespace CardDealer.Service.Cards
             return cardHandsToReturn;
         }
 
+        /// <summary>
+        /// helper method for mapping a post hand-request, taking in a hand of cards
+        /// and mapping it to entity model
+        /// </summary>
+        /// <param name="cardHandDto"></param>
+        /// <returns>Hand entity </returns>
+        public Hand MapFromHandDtoToEntity(CardHandDto cardHandDto)
+        {
+            Guid randomCardHandId = Guid.NewGuid();
+            
+            Hand hand = new()
+            {
+                Id = randomCardHandId,
+                CreatedAt = DateTime.Now,
+                CardHands = cardHandDto.CardHand.Select(card => new CardHand
+                {
+                    CardId = card.Id,
+                    HandId = randomCardHandId
+                }).ToList()
+            };
+
+            return hand;
+        }
+
+
+        /// <summary>
+        /// helper function, maps from list of entities to list of dtos
+        /// </summary>
+        /// <param name="cardHandEntities"></param>
+        /// <returns></returns>
         public List<CardHandDto> MapToDto(IEnumerable<Hand> cardHandEntities)
         {
             return cardHandEntities.Select(h =>

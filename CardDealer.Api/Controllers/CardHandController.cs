@@ -28,7 +28,7 @@ namespace CardDealer.Api.Controllers
             return Ok(cardHands);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name = "GetCardHand")]
         public async Task<IActionResult> GetCardHand(Guid id)
         {
             var cardHand = await _service.CardHandService.GetCardHand(id, trackChanges: true);
