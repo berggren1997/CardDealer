@@ -5,6 +5,9 @@ using System.Text.Json;
 
 namespace CardDealer.Client.Services.HttpService
 {
+    /// <summary>
+    /// This class is used for sending HTTP-Requests to the API
+    /// </summary>
     public class CardService : ICardService
     {
         private readonly HttpClient _httpClient;
