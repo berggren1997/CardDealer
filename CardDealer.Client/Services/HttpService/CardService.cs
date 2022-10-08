@@ -28,7 +28,7 @@ namespace CardDealer.Client.Services.HttpService
         /// <summary>
         /// sends a GET to the api 
         /// </summary>
-        /// <returns>deck of cards or null</returns>
+        /// <returns>deck of cards</returns>
         public async Task<Stack<CardDto>> GetDeckOfCards()
         {
             var response = await _httpClient.GetAsync("/api/card");
@@ -50,7 +50,7 @@ namespace CardDealer.Client.Services.HttpService
         }
 
         /// <summary>
-        /// sends a POST request to the api
+        /// sends a POST request to save cardhand the api
         /// </summary>
         /// <param name="cardHandDto"></param>
         /// <returns></returns>

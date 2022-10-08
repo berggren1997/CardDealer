@@ -5,6 +5,9 @@ using CardDealer.Service.Contracts.Cards;
 
 namespace CardDealer.Service
 {
+    /// <summary>
+    /// this class is used to lazy load our services
+    /// </summary>
     public class ServiceManager : IServiceManager
     {
         private readonly Lazy<ICardService> _cardService;

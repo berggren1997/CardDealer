@@ -4,6 +4,10 @@ using System.Linq.Expressions;
 
 namespace CardDealer.Persistence
 {
+    /// <summary>
+    /// Generic repository base, with CRUD-operations
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class RepositoryBase<T> : IRepositoryBase<T> where T : class
     {
         private readonly AppDbContext _context;
